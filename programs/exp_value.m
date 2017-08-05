@@ -1,4 +1,4 @@
-function energy = exp_value(MPS, g, N, d, J)
+function energy = exp_value(MPS, g, N, d, J, pbc)
 % As the last sweep has been from right to left, if we start computing the
 % Hamiltonian from the left, all the sites in the right are orthogonal so
 % the can be reduce to the identity.
@@ -7,15 +7,20 @@ function energy = exp_value(MPS, g, N, d, J)
 % identity.
 
 
-energy_per_site = zeros(1,N-1);
+energy_per_site = zeros(1,N);
 
-for site1 = 1:N-1
-    site2 = site1+1;
+for site1 = 1:N
+    
+    if site1 ~= N
+        site2 = site1+1;
+    else
+        site2 = 1;
+    end
     
     %% Hamiltonian
     
     if site1 == 1
-        g_prime = g;
+        g_prime = g*(1-pbc);
     else
         g_prime = 0;
     end
@@ -35,6 +40,7 @@ for site1 = 1:N-1
     end
           
     % Contraction of the two sites where we apply H
+    
     AB = ncon({MPS{site1} MPS{site2}}, {[-1 -3 1] [-2 1 -4]}, 1);
     AB = reshape(AB, d^2, size(AB, 3), size(AB, 4));
     

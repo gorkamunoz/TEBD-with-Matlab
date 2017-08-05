@@ -1,4 +1,4 @@
-function MPS = sweep_right(MPS, N, d, g, J, tau)
+function MPS = sweep_right(MPS, N, d, g, J, tau, pbc)
 
 
 for ii = 1: N-1
@@ -6,7 +6,7 @@ for ii = 1: N-1
     %% Hamiltonian 
         
     if ii ==1
-        g_prime = g;
+        g_prime = g*(1-pbc);
     else
         g_prime = 0;
     end
